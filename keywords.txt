@@ -1,0 +1,100 @@
+#######################################
+# Syntax Coloring Map For ISM330DHCX
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ISM330DHCXSensor			KEYWORD1
+ISM330DHCXStatusTypeDef		KEYWORD1
+ISM330DHCX_Event_Status_t	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+ReadID	KEYWORD2
+
+ACC_Enable	KEYWORD2
+ACC_Disable	KEYWORD2
+ACC_GetSensitivity	KEYWORD2
+ACC_GetOutputDataRate	KEYWORD2
+ACC_SetOutputDataRate	KEYWORD2
+ACC_GetFullScale	KEYWORD2
+ACC_SetFullScale	KEYWORD2
+ACC_GetAxes	KEYWORD2
+ACC_GetAxesRaw	KEYWORD2
+
+GYRO_Enable	KEYWORD2
+GYRO_Disable	KEYWORD2
+GYRO_GetSensitivity	KEYWORD2
+GYRO_GetOutputDataRate	KEYWORD2
+GYRO_SetOutputDataRate	KEYWORD2
+GYRO_GetFullScale	KEYWORD2
+GYRO_SetFullScale	KEYWORD2
+GYRO_GetAxes	KEYWORD2
+GYRO_GetAxesRaw	KEYWORD2
+
+ReadReg	KEYWORD2
+WriteReg	KEYWORD2
+
+ACC_SetSelfTest	KEYWORD2
+ACC_GetSelfTest KEYWORD2
+ACC_GetDRDYStatus	KEYWORD2
+ACC_Enable_HP_Filter KEYWORD2
+GYRO_SetSelfTest	KEYWORD2
+GYRO_GetSelfTest KEYWORD2
+GYRO_GetDRDYStatus	KEYWORD2
+GYRO_Enable_HP_Filter KEYWORD2
+
+ACC_GetEventStatus KEYWORD2
+
+ACC_EnableFreeFallDetection		KEYWORD2
+ACC_DisableFreeFallDetection		KEYWORD2
+ACC_SetFreeFallThreshold		KEYWORD2
+ACC_SetFreeFallDuration		KEYWORD2
+ACC_GetFreeFallThreshold		KEYWORD2
+
+ACC_EnableWakeUpDetection		KEYWORD2
+ACC_DisableWakeUpDetection		KEYWORD2
+ACC_SetWakeUpThreshold		KEYWORD2
+ACC_SetWakeUpDuration		KEYWORD2
+
+ACC_EnableSingleTapDetection		KEYWORD2
+ACC_DisableSingleTapDetection		KEYWORD2
+ACC_EnableDoubleTapDetection		KEYWORD2
+ACC_DisableDoubleTapDetection		KEYWORD2
+ACC_SetTapThreshold		KEYWORD2
+ACC_SetTapShockTime		KEYWORD2
+ACC_SetTapQuietTime		KEYWORD2
+ACC_SetTapDurationTime		KEYWORD2
+
+ACC_Enable6DOrientation		KEYWORD2
+ACC_Disable6DOrientation		KEYWORD2
+ACC_Set6DOrientationThreshold		KEYWORD2
+ACC_Get6DOrientationXL		KEYWORD2
+ACC_Get6DOrientationXH		KEYWORD2
+ACC_Get6DOrientationYL		KEYWORD2
+ACC_Get6DOrientationYH		KEYWORD2
+ACC_Get6DOrientationZL		KEYWORD2
+ACC_Get6DOrientationZH		KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+IIS2DLPC_OK	LITERAL1
+IIS2DLPC_ERROR	LITERAL1
+
+ISM330DHCX_ACC_SENSITIVITY_FS_2G	LITERAL1
+ISM330DHCX_ACC_SENSITIVITY_FS_4G	LITERAL1
+ISM330DHCX_ACC_SENSITIVITY_FS_8G	LITERAL1
+ISM330DHCX_ACC_SENSITIVITY_FS_16G	LITERAL1
+
+ISM330DHCX_GYRO_SENSITIVITY_FS_125DPS	LITERAL1
+ISM330DHCX_GYRO_SENSITIVITY_FS_250DPS	LITERAL1
+ISM330DHCX_GYRO_SENSITIVITY_FS_500DPS	LITERAL1
+ISM330DHCX_GYRO_SENSITIVITY_FS_1000DPS	LITERAL1
+ISM330DHCX_GYRO_SENSITIVITY_FS_2000DPS	LITERAL1
+ISM330DHCX_GYRO_SENSITIVITY_FS_4000DPS	LITERAL1
