@@ -54,7 +54,6 @@ ACC_EnableFreeFallDetection		KEYWORD2
 ACC_DisableFreeFallDetection		KEYWORD2
 ACC_SetFreeFallThreshold		KEYWORD2
 ACC_SetFreeFallDuration		KEYWORD2
-ACC_GetFreeFallThreshold		KEYWORD2
 
 ACC_EnableWakeUpDetection		KEYWORD2
 ACC_DisableWakeUpDetection		KEYWORD2

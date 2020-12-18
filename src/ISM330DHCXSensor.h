@@ -1,4 +1,4 @@
-/* Define to prevent recursive inclusion -------------------------------------/
+/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __ISM330DHCXSensor_H__
 #define __ISM330DHCXSensor_H__
 
@@ -15,20 +15,6 @@ typedef enum {
   ISM330DHCX_OK = 0,
   ISM330DHCX_ERROR = -1
 } ISM330DHCXStatusTypeDef;
-
-//AxesRaw_t
-typedef struct {
-  int16_t x;
-  int16_t y;
-  int16_t z;
-} ISM330DHCX_AxesRaw_t;
-
-//Axes_t
-typedef struct {
-  int32_t x;
-  int32_t y;
-  int32_t z;
-} ISM330DHCX_Axes_t;
 
 // PIN Sensors
 typedef enum {
@@ -47,27 +33,6 @@ typedef struct {
   unsigned int D6DOrientationStatus : 1;
   unsigned int SleepStatus : 1;
 } ISM330DHCX_Event_Status_t;
-
-//ism330dhcx_axis
-typedef union {
-  int16_t i16bit[3];
-  uint8_t u8bit[6];
-} ism330dhcx_axis3bit16_t;
-
-typedef union {
-  int16_t i16bit;
-  uint8_t u8bit[2];
-} ism330dhcx_axis1bit16_t;
-
-typedef union {
-  int32_t i32bit[3];
-  uint8_t u8bit[12];
-} ism330dhcx_axis3bit32_t;
-
-typedef union {
-  int32_t i32bit;
-  uint8_t u8bit[4];
-} ism330dhcx_axis1bit32_t;
 
 /* Define --------------------------------------------------------------------*/
 
@@ -88,7 +53,7 @@ typedef union {
 */
 class ISM330DHCXSensor {
   public:
-    /* ISM330DHCX Constrctor -----------------------------------------------------*/
+    /* ISM330DHCX Constructor -----------------------------------------------------*/
     ISM330DHCXSensor(TwoWire *i2c, uint8_t address = ISM330DHCX_I2C_ADD_H); //ID SA0 = 1
     /*default SA0=1,to set SA0=0  set the address to IIS2DLPC_I2C_ADD_L*/
     ISM330DHCXSensor(SPIClass *spi, int cs_spi, uint32_t spi_speed = 2000000);
@@ -102,8 +67,8 @@ class ISM330DHCXSensor {
     ISM330DHCXStatusTypeDef ACC_SetOutputDataRate(float Odr);
     ISM330DHCXStatusTypeDef ACC_GetFullScale(int32_t *FullScale);
     ISM330DHCXStatusTypeDef ACC_SetFullScale(int32_t FullScale);
-    ISM330DHCXStatusTypeDef ACC_GetAxesRaw(ISM330DHCX_AxesRaw_t *Value);
-    ISM330DHCXStatusTypeDef ACC_GetAxes(ISM330DHCX_Axes_t *Acceleration);
+    ISM330DHCXStatusTypeDef ACC_GetAxesRaw(int16_t *Value);
+    ISM330DHCXStatusTypeDef ACC_GetAxes(int32_t *Acceleration);
 
     ISM330DHCXStatusTypeDef GYRO_Enable();
     ISM330DHCXStatusTypeDef GYRO_Disable();
@@ -112,8 +77,8 @@ class ISM330DHCXSensor {
     ISM330DHCXStatusTypeDef GYRO_SetOutputDataRate(float Odr);
     ISM330DHCXStatusTypeDef GYRO_GetFullScale(int32_t *FullScale);
     ISM330DHCXStatusTypeDef GYRO_SetFullScale(int32_t FullScale);
-    ISM330DHCXStatusTypeDef GYRO_GetAxesRaw(ISM330DHCX_AxesRaw_t *Value);
-    ISM330DHCXStatusTypeDef GYRO_GetAxes(ISM330DHCX_Axes_t *AngularRate);
+    ISM330DHCXStatusTypeDef GYRO_GetAxesRaw(int16_t *Value);
+    ISM330DHCXStatusTypeDef GYRO_GetAxes(int32_t *AngularRate);
 
     ISM330DHCXStatusTypeDef ReadReg(uint8_t reg, uint8_t *Data);
     ISM330DHCXStatusTypeDef WriteReg(uint8_t reg, uint8_t Data);
@@ -138,8 +103,6 @@ class ISM330DHCXSensor {
     ISM330DHCXStatusTypeDef ACC_DisableFreeFallDetection();
     ISM330DHCXStatusTypeDef ACC_SetFreeFallThreshold(uint8_t Threshold);
     ISM330DHCXStatusTypeDef ACC_SetFreeFallDuration(uint8_t Duration);
-    ISM330DHCXStatusTypeDef ACC_GetFreeFallThreshold(uint8_t *Threshold);
-    ISM330DHCXStatusTypeDef ACC_GetFreeFallDuration(uint8_t *Duration);
 
     ISM330DHCXStatusTypeDef ACC_EnableWakeUpDetection(ISM330DHCX_SensorIntPin_t IntPin);
     ISM330DHCXStatusTypeDef ACC_DisableWakeUpDetection();
@@ -176,8 +139,8 @@ class ISM330DHCXSensor {
     ISM330DHCXStatusTypeDef FIFO_Set_Mode(uint8_t Mode);
     ISM330DHCXStatusTypeDef FIFO_Get_Tag(uint8_t *Tag);
     ISM330DHCXStatusTypeDef FIFO_Get_Data(uint8_t *Data);
-    ISM330DHCXStatusTypeDef FIFO_ACC_Get_Axes(ISM330DHCX_Axes_t *Acceleration);
-    ISM330DHCXStatusTypeDef FIFO_GYRO_Get_Axes(ISM330DHCX_Axes_t *AngularVelocity);
+    ISM330DHCXStatusTypeDef FIFO_ACC_Get_Axes(int32_t *Acceleration);
+    ISM330DHCXStatusTypeDef FIFO_GYRO_Get_Axes(int32_t *AngularVelocity);
 
     ISM330DHCXStatusTypeDef ACC_Enable_DRDY_On_INT1();
     ISM330DHCXStatusTypeDef ACC_Disable_DRDY_On_INT1();
@@ -293,7 +256,7 @@ class ISM330DHCXSensor {
 
     uint8_t acc_is_enabled;
     uint8_t gyro_is_enabled;
-    stmdev_ctx_t reg_ctx;
+    ism330dhcx_ctx_t reg_ctx;
 };
 
 #ifdef __cplusplus
@@ -303,4 +266,6 @@ int32_t ISM330DHCX_io_write(void *handle, uint8_t WriteAddr, uint8_t *pBuffer, u
 int32_t ISM330DHCX_io_read(void *handle, uint8_t ReadAddr, uint8_t *pBuffer, uint16_t nBytesToRead);
 #ifdef __cplusplus
 }
+#endif
+
 #endif
