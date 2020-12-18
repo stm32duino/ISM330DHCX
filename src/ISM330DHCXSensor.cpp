@@ -26,7 +26,7 @@ ISM330DHCXSensor::ISM330DHCXSensor(TwoWire *i2c, uint8_t address) : dev_i2c(i2c)
  *  @param cs_pin the chip select pin
  *  @param spi_speed the SPI speed
  */
-ISM330DHCXSensor::ISM330DHCXSensor(SPIClass *spi, int cs_spi, uint32_t spi_speed) : dev_spi(spi), cs_pin(cs_pin), spi_speed(spi_speed)
+ISM330DHCXSensor::ISM330DHCXSensor(SPIClass *spi, int cs_pin, uint32_t spi_speed) : dev_spi(spi), cs_pin(cs_pin), spi_speed(spi_speed)
 {
   reg_ctx.write_reg = ISM330DHCX_io_write;
   reg_ctx.read_reg = ISM330DHCX_io_read;
@@ -37,13 +37,6 @@ ISM330DHCXSensor::ISM330DHCXSensor(SPIClass *spi, int cs_spi, uint32_t spi_speed
   digitalWrite(cs_pin, HIGH);
   dev_i2c = NULL;
   address = 0;
-
-  /* Enable SPI 3-Wires on the component */
-  uint8_t data = 0x0C;
-
-  if (WriteReg(ISM330DHCX_CTRL3_C, data) != ISM330DHCX_OK) {
-    return ;
-  }
 
   if (Init() != ISM330DHCX_OK) {
     return ;
@@ -360,9 +353,9 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_SetFullScale(int32_t FullScale)
  * @param value pointer where the raw values are written
  * @retval 0 in case of success, an error code otherwise
  */
-ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetAxesRaw(ISM330DHCX_AxesRaw_t *Value)
+ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetAxesRaw(int16_t *Value)
 {
-  ism330dhcx_axis3bit16_t data_raw;
+  axis3bit16_t data_raw;
 
   /*Read raw data values */
   if (ism330dhcx_acceleration_raw_get(&reg_ctx, data_raw.u8bit) != ISM330DHCX_OK) {
@@ -370,9 +363,9 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetAxesRaw(ISM330DHCX_AxesRaw_t *V
   }
 
   /*Formatting data */
-  Value->x = data_raw.i16bit[0];
-  Value->y = data_raw.i16bit[1];
-  Value->z = data_raw.i16bit[2];
+  Value[0] = data_raw.i16bit[0];
+  Value[1] = data_raw.i16bit[1];
+  Value[2] = data_raw.i16bit[2];
 
   return ISM330DHCX_OK;
 }
@@ -382,10 +375,10 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetAxesRaw(ISM330DHCX_AxesRaw_t *V
  * @param acceleration pointer where the axes are written
  * @retval 0 in case of success, an error code otherwise
 */
-ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetAxes(ISM330DHCX_Axes_t *Acceleration)
+ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetAxes(int32_t *Acceleration)
 {
   float sensitivity = 0.0f;
-  ISM330DHCX_AxesRaw_t data_raw;
+  int16_t data_raw[3];
 
   /* Get actualSensitivity */
   if (ACC_GetSensitivity(&sensitivity) != ISM330DHCX_OK) {
@@ -393,14 +386,14 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetAxes(ISM330DHCX_Axes_t *Acceler
   }
 
   /*Get Data Raw*/
-  if (ACC_GetAxesRaw(&data_raw) != ISM330DHCX_OK) {
+  if (ACC_GetAxesRaw(data_raw) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
   /*Calculate data */
-  Acceleration->x = (int32_t)((float) data_raw.x * sensitivity);
-  Acceleration->y = (int32_t)((float) data_raw.y * sensitivity);
-  Acceleration->z = (int32_t)((float) data_raw.z * sensitivity);
+  Acceleration[0] = (int32_t)((float) data_raw[0] * sensitivity);
+  Acceleration[1] = (int32_t)((float) data_raw[1] * sensitivity);
+  Acceleration[2] = (int32_t)((float) data_raw[2] * sensitivity);
 
   return ISM330DHCX_OK;
 }
@@ -484,7 +477,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetSensitivity(float *Sensitivity
       ret = ISM330DHCX_ERROR;
       break;
   }
-  return ISM330DHCX_OK;
+  return ret;
 }
 
 /**
@@ -635,7 +628,6 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetFullScale(int32_t *FullScale)
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_SetFullScale(int32_t FullScale)
 {
-  ISM330DHCXStatusTypeDef ret = ISM330DHCX_OK;
   ism330dhcx_fs_g_t new_fs;
 
   new_fs = (FullScale <= 125) ? ISM330DHCX_125dps
@@ -658,9 +650,9 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_SetFullScale(int32_t FullScale)
  * @param value pointer where the raw values are written
  * @retval 0 in case of success, an error code otherwise
  */
-ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetAxesRaw(ISM330DHCX_AxesRaw_t *Value)
+ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetAxesRaw(int16_t *Value)
 {
-  ism330dhcx_axis3bit16_t data_raw;
+  axis3bit16_t data_raw;
 
   /* Read raw data values */
   if (ism330dhcx_angular_rate_raw_get(&reg_ctx, data_raw.u8bit) != ISM330DHCX_OK) {
@@ -668,9 +660,9 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetAxesRaw(ISM330DHCX_AxesRaw_t *
   }
 
   /* Format the data */
-  Value->x = data_raw.i16bit[0];
-  Value->y = data_raw.i16bit[1];
-  Value->z = data_raw.i16bit[2];
+  Value[0] = data_raw.i16bit[0];
+  Value[1] = data_raw.i16bit[1];
+  Value[2] = data_raw.i16bit[2];
 
   return ISM330DHCX_OK;
 }
@@ -680,13 +672,13 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetAxesRaw(ISM330DHCX_AxesRaw_t *
  * @param acceleration pointer where the axes are written
  * @retval 0 in case of success, an error code otherwise
 */
-ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetAxes(ISM330DHCX_Axes_t *AngularRate)
+ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetAxes(int32_t *AngularRate)
 {
   float sensitivity;
-  ISM330DHCX_AxesRaw_t raw_data;
+  int16_t raw_data[3];
 
   /*Read raw data values */
-  if (GYRO_GetAxesRaw(&raw_data) != ISM330DHCX_OK) {
+  if (GYRO_GetAxesRaw(raw_data) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
@@ -695,9 +687,9 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_GetAxes(ISM330DHCX_Axes_t *Angula
     return ISM330DHCX_ERROR;
   }
 
-  AngularRate->x = (int32_t)((float) raw_data.x)  * sensitivity;
-  AngularRate->y = (int32_t)((float) raw_data.y)  * sensitivity;
-  AngularRate->z = (int32_t)((float) raw_data.z)  * sensitivity;
+  AngularRate[0] = (int32_t)((float) raw_data[0]  * sensitivity);
+  AngularRate[1] = (int32_t)((float) raw_data[1]  * sensitivity);
+  AngularRate[2] = (int32_t)((float) raw_data[2]  * sensitivity);
 
   return ISM330DHCX_OK;
 }
@@ -859,7 +851,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_Get_SelfTest(uint8_t *SelfStatus)
       break;
   }
 
-  return ISM330DHCX_OK;
+  return ret;
 }
 
 /**
@@ -943,7 +935,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_Get_SelfTest(uint8_t *SelfStatus)
       break;
   }
 
-  return ISM330DHCX_OK;
+  return ret;
 }
 
 /**
@@ -1119,73 +1111,6 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_SetFreeFallDuration(uint8_t Durati
 }
 
 /*
- *  @brief Get the Threshold for the Free Fall event
- *  @param Threshold pointer
- *  @retval 0 in case of success, an error code otherwise
- */
-ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetFreeFallThreshold(uint8_t *Threshold)
-{
-  ISM330DHCXStatusTypeDef ret = ISM330DHCX_OK;
-  ism330dhcx_ff_ths_t ff_th;
-
-  /* Read actual full scale */
-  if (ism330dhcx_ff_threshold_get(&reg_ctx, &ff_th) != ISM330DHCX_OK) {
-    return ISM330DHCX_ERROR;
-  }
-
-  switch (ff_th) {
-    case ISM330DHCX_FF_TSH_156mg:
-      *Threshold =  0;
-      break;
-
-    case ISM330DHCX_FF_TSH_219mg:
-      *Threshold =  1;
-      break;
-
-    case ISM330DHCX_FF_TSH_250mg:
-      *Threshold =  2;
-      break;
-
-    case ISM330DHCX_FF_TSH_312mg:
-      *Threshold = 3;
-      break;
-
-    case ISM330DHCX_FF_TSH_344mg:
-      *Threshold = 4;
-      break;
-
-    case ISM330DHCX_FF_TSH_406mg:
-      *Threshold = 5;
-      break;
-    case ISM330DHCX_FF_TSH_469mg:
-      *Threshold = 6;
-      break;
-    case ISM330DHCX_FF_TSH_500mg:
-      *Threshold = 7;
-      break;
-    default:
-      ret = ISM330DHCX_ERROR;
-      break;
-  }
-
-  return ret;
-}
-
-/*
- *  @brief Get the Duration for the Free Fall event
- *  @param Duration pointer
- *  @retval 0 in case of success, an error code otherwise
- */
-ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetFreeFallDuration(uint8_t *Duration)
-{
-  if (ism330dhcx_ff_dur_get(&reg_ctx, Duration) != ISM330DHCX_OK) {
-    return ISM330DHCX_ERROR;
-  }
-
-  return ISM330DHCX_OK;
-}
-
-/*
  *  @brief Enable the detection of the Wake Up event
  *  @retval 0 in case of success, an error code otherwise
  */
@@ -1331,7 +1256,6 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_EnableSingleTapDetection(ISM330DHC
   ISM330DHCXStatusTypeDef ret = ISM330DHCX_OK;
   ism330dhcx_pin_int1_route_t val1;
   ism330dhcx_pin_int2_route_t val2;
-  ism330dhcx_wake_up_ths_t wkup;
 
   /* Output Data Rate selection */
   if (ACC_SetOutputDataRate(417.0f) != ISM330DHCX_OK) {
@@ -2162,7 +2086,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::FIFO_Get_Data(uint8_t *Data)
  * @param  Acceleration FIFO accelerometer axes [mg]
  * @retval 0 in case of success, an error code otherwise
  */
-ISM330DHCXStatusTypeDef ISM330DHCXSensor::FIFO_ACC_Get_Axes(ISM330DHCX_Axes_t *Acceleration)
+ISM330DHCXStatusTypeDef ISM330DHCXSensor::FIFO_ACC_Get_Axes(int32_t *Acceleration)
 {
   uint8_t data[6];
   int16_t data_raw[3];
@@ -2185,9 +2109,9 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::FIFO_ACC_Get_Axes(ISM330DHCX_Axes_t *A
   acceleration_float[1] = (float)data_raw[1] * sensitivity;
   acceleration_float[2] = (float)data_raw[2] * sensitivity;
 
-  Acceleration->x = (int32_t)acceleration_float[0];
-  Acceleration->y = (int32_t)acceleration_float[1];
-  Acceleration->z = (int32_t)acceleration_float[2];
+  Acceleration[0] = (int32_t)acceleration_float[0];
+  Acceleration[1] = (int32_t)acceleration_float[1];
+  Acceleration[2] = (int32_t)acceleration_float[2];
 
   return ISM330DHCX_OK;
 }
@@ -2197,7 +2121,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::FIFO_ACC_Get_Axes(ISM330DHCX_Axes_t *A
  * @param  AngularVelocity FIFO gyroscope axes [mDPS]
  * @retval 0 in case of success, an error code otherwise
  */
-ISM330DHCXStatusTypeDef ISM330DHCXSensor::FIFO_GYRO_Get_Axes(ISM330DHCX_Axes_t *AngularVelocity)
+ISM330DHCXStatusTypeDef ISM330DHCXSensor::FIFO_GYRO_Get_Axes(int32_t *AngularVelocity)
 {
   uint8_t data[6];
   int16_t data_raw[3];
@@ -2220,9 +2144,9 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::FIFO_GYRO_Get_Axes(ISM330DHCX_Axes_t *
   angular_velocity_float[1] = (float)data_raw[1] * sensitivity;
   angular_velocity_float[2] = (float)data_raw[2] * sensitivity;
 
-  AngularVelocity->x = (int32_t)angular_velocity_float[0];
-  AngularVelocity->y = (int32_t)angular_velocity_float[1];
-  AngularVelocity->z = (int32_t)angular_velocity_float[2];
+  AngularVelocity[0] = (int32_t)angular_velocity_float[0];
+  AngularVelocity[1] = (int32_t)angular_velocity_float[1];
+  AngularVelocity[2] = (int32_t)angular_velocity_float[2];
 
   return ISM330DHCX_OK;
 }
