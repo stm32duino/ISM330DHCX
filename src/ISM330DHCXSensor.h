@@ -59,6 +59,8 @@ class ISM330DHCXSensor {
     ISM330DHCXSensor(SPIClass *spi, int cs_spi, uint32_t spi_speed = 2000000);
 
     /* ISM330DHCX Function -------------------------------------------------------*/
+    ISM330DHCXStatusTypeDef begin();
+    ISM330DHCXStatusTypeDef end();
     ISM330DHCXStatusTypeDef ReadID(uint8_t *Id);
     ISM330DHCXStatusTypeDef ACC_Enable();
     ISM330DHCXStatusTypeDef ACC_Disable();

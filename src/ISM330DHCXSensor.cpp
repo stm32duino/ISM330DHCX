@@ -13,12 +13,8 @@ ISM330DHCXSensor::ISM330DHCXSensor(TwoWire *i2c, uint8_t address) : dev_i2c(i2c)
   reg_ctx.write_reg = ISM330DHCX_io_write;
   reg_ctx.read_reg = ISM330DHCX_io_read;
   reg_ctx.handle = (void *) this;
-
-  if (Init() != ISM330DHCX_OK) {
-    return ;
-  }
-
-  return ;
+  acc_is_enabled = 0U;
+  gyro_is_enabled = 0U;
 }
 
 /** Constructor I2C
@@ -31,18 +27,10 @@ ISM330DHCXSensor::ISM330DHCXSensor(SPIClass *spi, int cs_pin, uint32_t spi_speed
   reg_ctx.write_reg = ISM330DHCX_io_write;
   reg_ctx.read_reg = ISM330DHCX_io_read;
   reg_ctx.handle = (void *) this;
-
-  //Config CS PIN
-  pinMode(cs_pin, OUTPUT);
-  digitalWrite(cs_pin, HIGH);
   dev_i2c = NULL;
-  address = 0;
-
-  if (Init() != ISM330DHCX_OK) {
-    return ;
-  }
-
-  return ;
+  address = 0U; 
+  acc_is_enabled = 0U;
+  gyro_is_enabled = 0U;
 }
 
 /**
@@ -92,8 +80,56 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::Init()
     return ISM330DHCX_ERROR;
   }
 
-  acc_is_enabled = 0;
-  gyro_is_enabled = 0;
+  acc_is_enabled = 0U;
+  gyro_is_enabled = 0U;
+
+  return ISM330DHCX_OK;
+}
+
+/**
+ * @brief  Configure the sensor in order to be used
+ * @retval 0 in case of success, an error code otherwise
+ */
+ISM330DHCXStatusTypeDef ISM330DHCXSensor::begin()
+{
+  if(dev_spi)
+  {
+    // Configure CS pin
+    pinMode(cs_pin, OUTPUT);
+    digitalWrite(cs_pin, HIGH); 
+  }
+
+  if (Init() != ISM330DHCX_OK)
+  {
+    return ISM330DHCX_ERROR;
+  }
+
+  return ISM330DHCX_OK;
+}
+
+/**
+ * @brief  Disable the sensor and relative resources
+ * @retval 0 in case of success, an error code otherwise
+ */
+ISM330DHCXStatusTypeDef ISM330DHCXSensor::end()
+{
+  /* Disable both acc and gyro */
+  if (ACC_Disable() != ISM330DHCX_OK)
+  {
+    return ISM330DHCX_ERROR;
+  }
+
+  if (GYRO_Disable() != ISM330DHCX_OK)
+  {
+    return ISM330DHCX_ERROR;
+  }
+
+  /* Reset CS configuration */
+  if(dev_spi)
+  {
+    // Configure CS pin
+    pinMode(cs_pin, INPUT); 
+  }
 
   return ISM330DHCX_OK;
 }
@@ -127,7 +163,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_Enable()
     return ISM330DHCX_ERROR;
   }
 
-  acc_is_enabled = 1;
+  acc_is_enabled = 1U;
   return ISM330DHCX_OK;
 }
 
@@ -146,7 +182,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_Disable()
     return ISM330DHCX_ERROR;
   }
 
-  acc_is_enabled = 0;
+  acc_is_enabled = 0U;
 
   return ISM330DHCX_OK;
 }
@@ -414,7 +450,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_Enable()
     return ISM330DHCX_ERROR;
   }
 
-  gyro_is_enabled = 1;
+  gyro_is_enabled = 1U;
 
   return ISM330DHCX_OK;
 }
@@ -435,7 +471,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_Disable()
     return ISM330DHCX_ERROR;
   }
 
-  gyro_is_enabled = 0;
+  gyro_is_enabled = 0U;
 
   return ISM330DHCX_OK;
 }
@@ -1287,7 +1323,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_EnableSingleTapDetection(ISM330DHC
     return ISM330DHCX_ERROR;
   }
 
-  if (ism330dhcx_tap_threshold_y_set(&reg_ctx, 0x89) != ISM330DHCX_OK) {
+  if (ism330dhcx_tap_threshold_y_set(&reg_ctx, 0x09) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
@@ -1296,12 +1332,12 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_EnableSingleTapDetection(ISM330DHC
   }
 
   /* Set tap shock time window. */
-  if (ism330dhcx_tap_shock_set(&reg_ctx, 0x06) != ISM330DHCX_OK) {
+  if (ism330dhcx_tap_shock_set(&reg_ctx, 0x02) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
   /* Set tap quiet time window. */
-  if (ism330dhcx_tap_quiet_set(&reg_ctx, 0x06) != ISM330DHCX_OK) {
+  if (ism330dhcx_tap_quiet_set(&reg_ctx, 0x01) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
@@ -1387,6 +1423,14 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_DisableSingleTapDetection()
     return ISM330DHCX_ERROR;
   }
 
+  if (ism330dhcx_tap_threshold_y_set(&reg_ctx, 0x00) != ISM330DHCX_OK) {
+    return ISM330DHCX_ERROR;
+  }
+
+  if (ism330dhcx_tap_threshold_z_set(&reg_ctx, 0x00) != ISM330DHCX_OK) {
+    return ISM330DHCX_ERROR;
+  }
+
   /* Disable Z direction in tap recognition. */
   if (ism330dhcx_tap_detection_on_z_set(&reg_ctx, PROPERTY_DISABLE) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
@@ -1445,7 +1489,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_EnableDoubleTapDetection(ISM330DHC
     return ISM330DHCX_ERROR;
   }
 
-  if (ism330dhcx_tap_threshold_y_set(&reg_ctx, 0x8C) != ISM330DHCX_OK) {
+  if (ism330dhcx_tap_threshold_y_set(&reg_ctx, 0x0C) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
@@ -1454,17 +1498,17 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_EnableDoubleTapDetection(ISM330DHC
   }
 
   /* Set tap shock time window. */
-  if (ism330dhcx_tap_shock_set(&reg_ctx, 0x7F) != ISM330DHCX_OK) {
+  if (ism330dhcx_tap_shock_set(&reg_ctx, 0x03) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
   /* Set tap quiet time window. */
-  if (ism330dhcx_tap_quiet_set(&reg_ctx, 0x7F) != ISM330DHCX_OK) {
+  if (ism330dhcx_tap_quiet_set(&reg_ctx, 0x03) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
   /* Set tap duration time window. */
-  if (ism330dhcx_tap_dur_set(&reg_ctx, 0x7F) != ISM330DHCX_OK) {
+  if (ism330dhcx_tap_dur_set(&reg_ctx, 0x07) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
@@ -1559,6 +1603,14 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_DisableDoubleTapDetection()
 
   /* Reset tap threshold */
   if (ism330dhcx_tap_threshold_x_set(&reg_ctx, 0x00) != ISM330DHCX_OK) {
+    return ISM330DHCX_ERROR;
+  }
+
+  if (ism330dhcx_tap_threshold_y_set(&reg_ctx, 0x00) != ISM330DHCX_OK) {
+    return ISM330DHCX_ERROR;
+  }
+
+  if (ism330dhcx_tap_threshold_z_set(&reg_ctx, 0x00) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
