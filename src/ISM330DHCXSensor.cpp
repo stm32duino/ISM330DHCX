@@ -28,7 +28,7 @@ ISM330DHCXSensor::ISM330DHCXSensor(SPIClass *spi, int cs_pin, uint32_t spi_speed
   reg_ctx.read_reg = ISM330DHCX_io_read;
   reg_ctx.handle = (void *) this;
   dev_i2c = NULL;
-  address = 0U; 
+  address = 0U;
   acc_is_enabled = 0U;
   gyro_is_enabled = 0U;
 }
@@ -92,15 +92,13 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::Init()
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::begin()
 {
-  if(dev_spi)
-  {
+  if (dev_spi) {
     // Configure CS pin
     pinMode(cs_pin, OUTPUT);
-    digitalWrite(cs_pin, HIGH); 
+    digitalWrite(cs_pin, HIGH);
   }
 
-  if (Init() != ISM330DHCX_OK)
-  {
+  if (Init() != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
@@ -114,21 +112,18 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::begin()
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::end()
 {
   /* Disable both acc and gyro */
-  if (ACC_Disable() != ISM330DHCX_OK)
-  {
+  if (ACC_Disable() != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
-  if (GYRO_Disable() != ISM330DHCX_OK)
-  {
+  if (GYRO_Disable() != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
   /* Reset CS configuration */
-  if(dev_spi)
-  {
+  if (dev_spi) {
     // Configure CS pin
-    pinMode(cs_pin, INPUT); 
+    pinMode(cs_pin, INPUT);
   }
 
   return ISM330DHCX_OK;
