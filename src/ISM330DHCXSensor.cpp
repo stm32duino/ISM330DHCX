@@ -758,7 +758,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::WriteReg(uint8_t reg, uint8_t data)
 
 /*
  *  @brief Get the ISM330DHCX Status of the Event
- *  @param Status pointer to a structur Event_Status_t
+ *  @param Status pointer to a structure Event_Status_t
  *  @retval 0 in case of success, an error code otherwise
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetEventStatus(ISM330DHCX_Event_Status_t *Status)
@@ -902,7 +902,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_Get_DRDY_Status(uint8_t *Status)
 /**
  * @brief Set HP filter for ISM330DHCX accelerometer
  * @param CutOff value to set frequency
- * @retval 0 in case of succes, an error code otherwise
+ * @retval 0 in case of success, an error code otherwise
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_Enable_HP_Filter(ism330dhcx_hp_slope_xl_en_t CutOff)
 {
@@ -986,7 +986,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_Get_DRDY_Status(uint8_t *Status)
 /**
  * @brief Set HP filter for ISM330DHCX gyroscope
  * @param CutOff value to set frequency
- * @retval 0 in case of succes, an error code otherwise
+ * @retval 0 in case of success, an error code otherwise
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_Enable_HP_Filter(ism330dhcx_hpm_g_t CutOff)
 {
