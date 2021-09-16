@@ -1,0 +1,21 @@
+name: Astyle Check
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Astyle check
+        id: Astyle
+        uses: stm32duino/actions/astyle-check@master
+      # Use the output from the `Astyle` step
+      - name: Astyle Errors
+        if: failure()
+        run: |
+          cat ${{ steps.Astyle.outputs.astyle-result }}
+          exit 1

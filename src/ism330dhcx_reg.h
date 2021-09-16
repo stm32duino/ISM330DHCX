@@ -57,23 +57,23 @@ extern "C" {
   */
 
 typedef union {
-    int16_t i16bit[3];
-    uint8_t u8bit[6];
+  int16_t i16bit[3];
+  uint8_t u8bit[6];
 } axis3bit16_t;
 
 typedef union {
-    int16_t i16bit;
-    uint8_t u8bit[2];
+  int16_t i16bit;
+  uint8_t u8bit[2];
 } axis1bit16_t;
 
 typedef union {
-    int32_t i32bit[3];
-    uint8_t u8bit[12];
+  int32_t i32bit[3];
+  uint8_t u8bit[12];
 } axis3bit32_t;
 
 typedef union {
-    int32_t i32bit;
-    uint8_t u8bit[4];
+  int32_t i32bit;
+  uint8_t u8bit[4];
 } axis1bit32_t;
 
 /**
@@ -82,14 +82,14 @@ typedef union {
   */
 
 typedef struct {
-    uint8_t bit0       : 1;
-    uint8_t bit1       : 1;
-    uint8_t bit2       : 1;
-    uint8_t bit3       : 1;
-    uint8_t bit4       : 1;
-    uint8_t bit5       : 1;
-    uint8_t bit6       : 1;
-    uint8_t bit7       : 1;
+  uint8_t bit0       : 1;
+  uint8_t bit1       : 1;
+  uint8_t bit2       : 1;
+  uint8_t bit3       : 1;
+  uint8_t bit4       : 1;
+  uint8_t bit5       : 1;
+  uint8_t bit6       : 1;
+  uint8_t bit7       : 1;
 } bitwise_t;
 
 #define PROPERTY_DISABLE                (0U)
@@ -140,11 +140,11 @@ typedef int32_t (*ism330dhcx_write_ptr)(void *, uint8_t, uint8_t *, uint16_t);
 typedef int32_t (*ism330dhcx_read_ptr)(void *, uint8_t, uint8_t *, uint16_t);
 
 typedef struct {
-    /** Component mandatory fields **/
-    ism330dhcx_write_ptr  write_reg;
-    ism330dhcx_read_ptr   read_reg;
-    /** Customizable optional pointer **/
-    void *handle;
+  /** Component mandatory fields **/
+  ism330dhcx_write_ptr  write_reg;
+  ism330dhcx_read_ptr   read_reg;
+  /** Customizable optional pointer **/
+  void *handle;
 } ism330dhcx_ctx_t;
 
 /**

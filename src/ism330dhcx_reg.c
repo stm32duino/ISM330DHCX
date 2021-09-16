@@ -1495,7 +1495,7 @@ int32_t ism330dhcx_steps_reset(ism330dhcx_ctx_t *ctx)
 
 /**
   * @defgroup   ISM330DHCX_common
-  * @brief      This section groups common usefull functions.
+  * @brief      This section groups common useful functions.
   * @{
   *
   */
@@ -1670,7 +1670,7 @@ int32_t ism330dhcx_ln_pg_write_byte(ism330dhcx_ctx_t *ctx, uint16_t add,
   * @param  ctx    Read / write interface definitions.(ptr)
   * @param  buf    Page line address.(ptr)
   * @param  val    Value to write.
-  * @param  len    buffer lengh.
+  * @param  len    buffer length.
   * @retval        Interface status (MANDATORY: return 0 -> no Error).
   *
   */
@@ -3817,7 +3817,7 @@ int32_t ism330dhcx_i2c_interface_get(ism330dhcx_ctx_t *ctx,
 /**
   * @defgroup   ISM330DHCX_interrupt_pins
   * @brief      This section groups all the functions that manage
-  *             interrup pins
+  *             interrupt pins
   * @{
   *
   */

@@ -28,7 +28,7 @@ ISM330DHCXSensor::ISM330DHCXSensor(SPIClass *spi, int cs_pin, uint32_t spi_speed
   reg_ctx.read_reg = ISM330DHCX_io_read;
   reg_ctx.handle = (void *) this;
   dev_i2c = NULL;
-  address = 0U; 
+  address = 0U;
   acc_is_enabled = 0U;
   gyro_is_enabled = 0U;
 }
@@ -92,15 +92,13 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::Init()
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::begin()
 {
-  if(dev_spi)
-  {
+  if (dev_spi) {
     // Configure CS pin
     pinMode(cs_pin, OUTPUT);
-    digitalWrite(cs_pin, HIGH); 
+    digitalWrite(cs_pin, HIGH);
   }
 
-  if (Init() != ISM330DHCX_OK)
-  {
+  if (Init() != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
@@ -114,21 +112,18 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::begin()
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::end()
 {
   /* Disable both acc and gyro */
-  if (ACC_Disable() != ISM330DHCX_OK)
-  {
+  if (ACC_Disable() != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
-  if (GYRO_Disable() != ISM330DHCX_OK)
-  {
+  if (GYRO_Disable() != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
   }
 
   /* Reset CS configuration */
-  if(dev_spi)
-  {
+  if (dev_spi) {
     // Configure CS pin
-    pinMode(cs_pin, INPUT); 
+    pinMode(cs_pin, INPUT);
   }
 
   return ISM330DHCX_OK;
@@ -763,7 +758,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::WriteReg(uint8_t reg, uint8_t data)
 
 /*
  *  @brief Get the ISM330DHCX Status of the Event
- *  @param Status pointer to a structur Event_Status_t
+ *  @param Status pointer to a structure Event_Status_t
  *  @retval 0 in case of success, an error code otherwise
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_GetEventStatus(ISM330DHCX_Event_Status_t *Status)
@@ -907,7 +902,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_Get_DRDY_Status(uint8_t *Status)
 /**
  * @brief Set HP filter for ISM330DHCX accelerometer
  * @param CutOff value to set frequency
- * @retval 0 in case of succes, an error code otherwise
+ * @retval 0 in case of success, an error code otherwise
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::ACC_Enable_HP_Filter(ism330dhcx_hp_slope_xl_en_t CutOff)
 {
@@ -991,7 +986,7 @@ ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_Get_DRDY_Status(uint8_t *Status)
 /**
  * @brief Set HP filter for ISM330DHCX gyroscope
  * @param CutOff value to set frequency
- * @retval 0 in case of succes, an error code otherwise
+ * @retval 0 in case of success, an error code otherwise
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::GYRO_Enable_HP_Filter(ism330dhcx_hpm_g_t CutOff)
 {
