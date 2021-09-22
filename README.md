@@ -41,5 +41,5 @@ The access to the sensor value is done as explained below:
 You can find the source files at  
 https://github.com/stm32duino/ISM330DHCX
 
-The IIS2MDC datasheet is available at  
+The ISM330DHCX datasheet is available at  
 https://www.st.com/en/mems-and-sensors/ism330dhcx.html
