@@ -12,7 +12,7 @@ jobs:
 
       - name: Astyle check
         id: Astyle
-        uses: stm32duino/actions/astyle-check@master
+        uses: stm32duino/actions/astyle-check@main
       # Use the output from the `Astyle` step
       - name: Astyle Errors
         if: failure()
