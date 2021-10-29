@@ -18,6 +18,11 @@
 // Includes
 #include <ISM330DHCXSensor.h>
 
+#ifndef LED_BUILTIN
+#define LED_BUILTIN PNUM_NOT_DEFINED
+#warning "LED_BUILTIN is not defined."
+#endif
+
 #define SerialPort  Serial
 
 #if defined(ARDUINO_STM32WB5MM_DK) || defined(ARDUINO_B_U585I_IOT02A)
