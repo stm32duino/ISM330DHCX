@@ -45,9 +45,9 @@ All the MEMS drivers in stm32duino repositories have the same units when returni
     - mdps for gyroscope (thousandth of degree/s)
     - mgauss for magnetometer (thousandth of gauss)
 
-Readings can be obtained either as raw (unscaled) ```uint16_t``` values from the ```XXX_GetAxesRaw``` functions, or as physical (scaled) ```uint32_t``` values from the ```XXX_GetAxes``` functions, where ```XXX``` is eithet ```ACC``` or ```GYRO```.
+Readings can be obtained either as raw (unscaled) ```uint16_t``` values from the ```XXX_GetAxesRaw``` functions, or as physical (scaled) ```uint32_t``` values from the ```XXX_GetAxes``` functions, where ```XXX``` is eithet ```ACC``` or ```GYRO```. The factor to use for scaling from a raw to a physical value is from the ```XXX_GetSensitivity``` functions.
 
-For example, to convert the raw reading to float m/s^2, the following can be done:
+For example, to convert the raw acceleration reading to float m/s^2, the following can be done:
 
 ```cpp
 int16_t acc_raw[3];
