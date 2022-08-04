@@ -50,6 +50,16 @@ typedef struct {
 
 /**
 * Abstract class of an ISM330DHCX.
+*
+* A few notes about the acceleration and angular rate outputs:
+* - these are returned as either int16_t for the raw (unscaled) value (XXX_GetAxesRaw functions)
+*   or int32_t for the physical (scaled) value (XXX_GetAxes functions)
+* - the physical (scaled) readings have the following units:
+*   - mg for accelerometer (thousandth of 1g, 1g is 9.81 m/s^2)
+*   - mdps for gyroscope (thousandth of degree/s)
+* - conversion from raw to physical value is done by multiplying the output of the XXX_GetAxesRaw functions
+*   by the output of the XXX_GetSensitivity functions.
+*
 */
 class ISM330DHCXSensor {
   public:
