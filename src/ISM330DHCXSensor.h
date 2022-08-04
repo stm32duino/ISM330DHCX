@@ -50,7 +50,7 @@ typedef struct {
 
 /**
 * Abstract class of an ISM330DHCX.
-* 
+*
 * A few notes about the acceleration and angular rate outputs:
 * - these are returned as either int16_t for the raw (unscaled) value (XXX_GetAxesRaw functions)
 *   or int32_t for the physical (scaled) value (XXX_GetAxes functions)
