@@ -192,11 +192,11 @@ class ISM330DHCXSensor {
       }
 
       if (dev_i2c) {
-        dev_i2c->beginTransmission(((uint8_t)(((address) >> 1) & 0x7F)));
+        dev_i2c->beginTransmission(address);
         dev_i2c->write(RegisterAddr);
         dev_i2c->endTransmission(false);
 
-        dev_i2c->requestFrom(((uint8_t)(((address) >> 1) & 0x7F)), (uint8_t) NumByteToRead);
+        dev_i2c->requestFrom(address, (uint8_t) NumByteToRead);
 
         int i = 0;
         while (dev_i2c->available()) {
@@ -239,7 +239,7 @@ class ISM330DHCXSensor {
       }
 
       if (dev_i2c) {
-        dev_i2c->beginTransmission(((uint8_t)(((address) >> 1) & 0x7F)));
+        dev_i2c->beginTransmission(address);
 
         dev_i2c->write(RegisterAddr);
         for (uint16_t i = 0 ; i < NumByteToWrite ; i++) {
