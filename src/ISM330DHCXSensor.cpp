@@ -39,6 +39,21 @@ ISM330DHCXSensor::ISM330DHCXSensor(SPIClass *spi, int cs_pin, uint32_t spi_speed
  */
 ISM330DHCXStatusTypeDef ISM330DHCXSensor::Init()
 {
+  /* Check sensor ID: this checks that we can communicate with the sensor */
+
+  uint8_t Id;
+
+  /* Get the Id; note this is not enough per se depending on the I2C implementation */
+  if (ReadID(&Id) != ISM330DHCX_OK) {
+    return ISM330DHCX_ERROR;
+  }
+
+  /* Check that we actually got back the right ID; this should return an error even if
+  the I2C implementation does not complain in case of no response. */
+  if (Id != ISM330DHCX_ID) {
+    return ISM330DHCX_ERROR;
+  }
+  
   /* SW reset */
   if (ism330dhcx_reset_set(&(reg_ctx), PROPERTY_ENABLE) != ISM330DHCX_OK) {
     return ISM330DHCX_ERROR;
