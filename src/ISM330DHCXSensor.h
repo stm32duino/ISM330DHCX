@@ -152,7 +152,9 @@ class ISM330DHCXSensor {
     ISM330DHCXStatusTypeDef FIFO_Get_Tag(uint8_t *Tag);
     ISM330DHCXStatusTypeDef FIFO_Get_Data(uint8_t *Data);
     ISM330DHCXStatusTypeDef FIFO_ACC_Get_Axes(int32_t *Acceleration);
+    ISM330DHCXStatusTypeDef FIFO_ACC_Get_AxesRaw(int16_t *AccelerationRaw);
     ISM330DHCXStatusTypeDef FIFO_GYRO_Get_Axes(int32_t *AngularVelocity);
+    ISM330DHCXStatusTypeDef FIFO_GYRO_Get_AxesRaw(int16_t *AngularVelocityRaw);
 
     ISM330DHCXStatusTypeDef ACC_Enable_DRDY_On_INT1();
     ISM330DHCXStatusTypeDef ACC_Disable_DRDY_On_INT1();
